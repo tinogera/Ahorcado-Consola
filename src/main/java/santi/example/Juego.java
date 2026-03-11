@@ -19,14 +19,14 @@ public class Juego {
     public void iniciar() {
         System.out.println("=== AHORCADO ===");
         System.out.print("Ingresá tu nombre de usuario: ");
-        String usuario = scanner.nextLine().trim();
+        String nombre = scanner.nextLine().trim();
 
-        // Busca el jugador en la API, si no existe lo crea
-        Jugador jugador = apiClient.buscarJugador(usuario);
+        Jugador jugador = apiClient.buscarJugador(nombre);
         if (jugador == null) {
-            System.out.println("Usuario nuevo, creando perfil...");
-            jugador = apiClient.crearJugador(usuario);
+            System.out.println("No se pudo conectar con la API.");
+            System.exit(0);
         }
+
 
         System.out.println("Bienvenido " + jugador.getNombre() + "!");
         System.out.println("Puntos: " + jugador.getPuntos() +

@@ -14,17 +14,17 @@ public class ApiClient {
     private final HttpClient client = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
 
-    public Jugador buscarJugador(String usuario) {
+    public Jugador buscarJugador(String nombre) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/jugadores/" + usuario))
+                    .uri(URI.create(BASE_URL + "/jugador/" + nombre))
                     .GET()
                     .build();
 
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() == 404) return null;
+            if (response.statusCode() == 404) return crearJugador(nombre);
 
             return gson.fromJson(response.body(), Jugador.class);
 
@@ -34,12 +34,12 @@ public class ApiClient {
         }
     }
 
-    public Jugador crearJugador(String usuario) {
+    public Jugador crearJugador(String nombre) {
         try {
-            String json = "{\"usuario\":\"" + usuario + "\"}";
+            String json = "{\"nombre\":\"" + nombre + "\"}";
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/jugadores"))
+                    .uri(URI.create(BASE_URL + "/jugador"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
@@ -78,7 +78,7 @@ public class ApiClient {
             String json = gson.toJson(jugador);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/jugadores/" + jugador.getNombre()))
+                    .uri(URI.create(BASE_URL + "/jugador/" + jugador.getNombre()))
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.ofString(json))
                     .build();
@@ -93,7 +93,7 @@ public class ApiClient {
     public void guardarPartida(String usuarioJugador, int palabraId, boolean gano) {
         try {
             String json = String.format(
-                    "{\"jugador\":{\"usuario\":\"%s\"},\"palabra\":{\"id\":%d},\"gano\":%b}",
+                    "{\"jugador\":{\"nombre\":\"%s\"},\"palabra\":{\"id\":%d},\"gano\":%b}",
                     usuarioJugador, palabraId, gano
             );
 
